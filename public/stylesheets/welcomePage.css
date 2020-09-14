@@ -1,0 +1,8 @@
+body {
+    background-color: lightgrey;
+}
+
+.clock {
+    margin: 0 auto;
+    width: 400px;
+}
