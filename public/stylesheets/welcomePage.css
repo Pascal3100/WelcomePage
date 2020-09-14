@@ -6,3 +6,9 @@ body {
     margin: 0 auto;
     width: 400px;
 }
+.date {
+    margin: 0 auto;
+    font-family: 'Nunito', sans-serif;
+    font-size: 50px;
+    text-align: center;
+}

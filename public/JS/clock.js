@@ -132,7 +132,7 @@ if (navigator.geolocation) {
 // on attend l'arrivée des données de sunriseSunset pour les afficher des que possible
 var waitForSunriseSunsetData = function(){
     if($.isEmptyObject(sunriseSunset)){
-        setTimeout(waitForSunriseSunsetData, 500); // check again in a second
+        setTimeout(waitForSunriseSunsetData, 100); // check again in 100 milliseconds
     }
     else {
         drawClock();
