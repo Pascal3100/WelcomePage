@@ -72,7 +72,7 @@ function drawArc(data) {
     var endAngle;
     //
     // On défini si c'est le matin ou l'apres-midi
-    if (hour < 11) {
+    if (hour < 12) {
         const angles = clockToAngles(data.sunset);
         startAngle = - angles.hourAngle;
         endAngle = upClock;
