@@ -63,10 +63,10 @@ function drawClock() {
 //
 // Creation de l'arc donnant la zone de jour
 function drawArc(data) {
+    //
     // Recuperation de l'heure actuelle
     const now = new Date();
     const hour = now.getHours();
-    const pi = Math.PI;
     const upClock = - pi / 2;
     var startAngle;
     var endAngle;
@@ -89,32 +89,31 @@ function drawArc(data) {
     ctx.strokeStyle = "#ffcc00";
     ctx.stroke();
 }
-
-function showPosition(position) {
-    coords.latitude = position.coords.latitude;
-    coords.longitude = position.coords.longitude;
-    // requete au server
-    askSunriseSunset(coords.latitude, coords.longitude).then(function (res) {
-        sunriseSunset = res;
-    });
+//
+// fonction d'attente de l'arrivée des données de lever et coucher du soleil
+function waitForSunriseSunsetData() {
+    if($.isEmptyObject(sunriseSunset)){
+        setTimeout(waitForSunriseSunsetData, 100); // check again in 100 milliseconds
+    }
+    else {
+        drawClock();
+    }
 }
-
-async function askSunriseSunset(lat, long) {
-    const sunriseSunsetData = await $.ajax({ 
-        url: '/askSunriseSunset',
-        method: 'POST',
-        data: {lat: lat, long: long},
-        dataType: "json", 
-        error: function(jqXHR, textStatus, err){
-            console.log('text status '+textStatus+', err '+err);
-        }
-     });
-     return sunriseSunsetData;
-}
-
-
+//
+const pi = Math.PI;
 var sunriseSunset = {};
 var coords = {};
+//
+$.get( "/getGeolocation" ).done(function( data ) {
+    coords = data;
+  });
+//
+// requete au server de l'heure de lever et coucher du soleil
+$.get( "/askSunriseSunset")
+  .done(function( data ) {
+    sunriseSunset = data;
+  });
+//
 //
 const canvas = document.getElementById("clockCanvas");
 const ctx = canvas.getContext("2d");
@@ -122,29 +121,11 @@ var radius = canvas.height / 2;
 ctx.translate(radius, radius);
 radius = radius * 0.9;
 //
-drawClock();
-//
-// Determine la position de l'utilisateur s'il l'accepte
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);    
-}
+// Dessin de l'horloge
 //
 // on attend l'arrivée des données de sunriseSunset pour les afficher des que possible
-var waitForSunriseSunsetData = function(){
-    if($.isEmptyObject(sunriseSunset)){
-        setTimeout(waitForSunriseSunsetData, 100); // check again in 100 milliseconds
-    }
-    else {
-        drawClock();
-    }
-};
 waitForSunriseSunsetData();
 //
-// on lance l'horloge
+// on rafraichi l'horloge toutes les 30 sec
 setInterval(drawClock, 30000);
-
-
-
-
-
   
